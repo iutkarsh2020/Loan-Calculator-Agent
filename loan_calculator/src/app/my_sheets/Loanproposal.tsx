@@ -32,15 +32,17 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Dispatch, SetStateAction, useState } from "react"
-import { states } from "../page"
+import { FormHookState, states } from "../page"
 import { PdfUploadForm } from "./PdfUploadForm"
 
 interface LoanProposalCardProps {
     contents: React.ReactNode,
+    currentState: FormHookState,
     changeCurrentState: Dispatch<SetStateAction<{
         state: states;
         message: string;
     }>>
+    changeFile: Dispatch<SetStateAction<File | null>>
 }
 interface LoanProposalFormProps {
     changeCurrentState: Dispatch<SetStateAction<{
@@ -57,6 +59,7 @@ const formSchema = z.object({
     AverageMonthlyBankBalance: z.string(),
     PrimaryBankName: z.string(),
     TotalExistingLoanAmount: z.string(),
+    LoanAmount: z.string(),
     ContactPerson: z.string(),
     ContactPersonEmail: z.string().email()
 })
@@ -66,17 +69,17 @@ export function LoanProposalCard( prop : LoanProposalCardProps){
     console.log("sus")
     console.log(prop)
     return (
-        <Card className="w-[70%]">
+        <Card className="w-[70%] h-min-[80vh] flex flex-col">
           <CardHeader>
-            <CardTitle>Loan Proposal Form</CardTitle>
-            <CardDescription>Please fill out this form correctly.</CardDescription>
+            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement"}</CardTitle>
+            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you."}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="h-min-[80vh] items-center justify-center">
           {(prop.contents?.type === "LoanproposalForm" && (
           <LoanproposalForm changeCurrentState={prop.changeCurrentState} />
         )) ||
           (prop.contents?.type === PdfUploadForm && (
-            <PdfUploadForm changeCurrentState={prop.changeCurrentState} />
+            <PdfUploadForm currentState={prop.currentState} changeFile = {prop.changeFile} changeCurrentState={prop.changeCurrentState} />
           )) ||
           prop.contents}
           </CardContent>
@@ -94,6 +97,7 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
             MonthlyRevenue: "",
             AverageMonthlyBankBalance: "",
             PrimaryBankName: "",
+            LoanAmount: "",
             TotalExistingLoanAmount: "",
             ContactPerson: "",
             ContactPersonEmail: ""
@@ -104,7 +108,8 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
         const monthlyRevenue = parseFloat(values.MonthlyRevenue.replace(/,/g, ""));
         const avgBankBalance = parseFloat(values.AverageMonthlyBankBalance.replace(/,/g, ""));
         const existingLoanAmount = parseFloat(values.TotalExistingLoanAmount.replace(/,/g, ""));
-
+        const loanAmount = parseFloat(values.LoanAmount.replace(/,/g, ""));
+        changeCurrentState((prev) => ({...prev, Amount: loanAmount}))
         // Initial screening rules
         if (monthlyRevenue < 50000) {
             let message = "Rejected: Monthly revenue below ₹50,000.\nWe're sorry, but your monthly revenue does not meet our minimum eligibility."
@@ -248,6 +253,20 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Total Existing Loan Amount (₹)</FormLabel>
+                        <FormControl>
+                            <Input type="text" placeholder="e.g. 200000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    {/* Current Loan Amount */}
+                    <FormField
+                    control={form.control}
+                    name="LoanAmount"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Current Loan Amount</FormLabel>
                         <FormControl>
                             <Input type="text" placeholder="e.g. 200000" {...field} />
                         </FormControl>

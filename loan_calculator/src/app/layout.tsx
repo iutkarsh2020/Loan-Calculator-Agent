@@ -25,12 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-100`}
       >
-        <div className="bg-slate-100 h-[100vh]">
-          <div className="h-[20px] bg-slate-100"></div>
+        <div
+          className="bg-slate-100 h-[100%] flex items-center justify-center m-8"
+        >
             {children}
-          <div className="h-[20px] bg-slate-100"></div>
         </div>
         
       </body>
