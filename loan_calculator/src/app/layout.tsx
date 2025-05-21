@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        <div className="bg-slate-100 h-[100%]">
+        <div className="bg-slate-100 h-[100vh]">
           <div className="h-[20px] bg-slate-100"></div>
             {children}
           <div className="h-[20px] bg-slate-100"></div>
