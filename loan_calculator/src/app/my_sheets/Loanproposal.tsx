@@ -98,8 +98,8 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
 
         // Initial screening rules
         if (monthlyRevenue < 50000) {
-            console.warn("Rejected: Monthly revenue below ₹50,000.");
-            return alert("We're sorry, but your monthly revenue does not meet our minimum eligibility.");
+            let message = "Rejected: Monthly revenue below ₹50,000.\nWe're sorry, but your monthly revenue does not meet our minimum eligibility."
+            
         }
 
         const unsupportedIndustries = ["Crypto", "Adult Content", "Gambling"];
