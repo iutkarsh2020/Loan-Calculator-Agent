@@ -3,6 +3,7 @@ import Image from "next/image";
 import {LoanproposalForm, LoanProposalCard} from "./my_sheets/Loanproposal";
 import { useState } from "react";
 import { PdfUploadForm } from "./my_sheets/PdfUploadForm";
+import LoadingScreen from "./my_sheets/LoadingScreen";
 export enum states{
   LOAN_PROPOSAL_FORM,
   LOAN_DENIED_STATE,
@@ -22,6 +23,7 @@ export default function Home() {
       (currentState.state === states.LOAN_DENIED_STATE && <LoanProposalCard changeCurrentState={changeCurrentState} contents={currentState.message}/> ||
       (currentState.state === states.PDF_UPLOAD_STATE && <LoanProposalCard changeCurrentState={changeCurrentState} contents={ <PdfUploadForm changeCurrentState={changeCurrentState}/> }  />)
       )}
+      <LoadingScreen/>
     </div>
   );
 }
