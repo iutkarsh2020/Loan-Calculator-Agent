@@ -10,12 +10,13 @@ import { FileText, Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-reac
 import { FormHookState, states } from "../page"
 
 export type PdfUploadFormProps = {
+  currentState: FormHookState,
   changeCurrentState?: Dispatch<SetStateAction<FormHookState>>
   onUploadComplete?: (fileUrl: string) => void
   changeFile: Dispatch<SetStateAction<File | null>>
 }
 
-export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile }: PdfUploadFormProps) => {
+export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile , currentState}: PdfUploadFormProps) => {
   const [file, setFile] = useState<File | null>(null)
   const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
   const [progress, setProgress] = useState(0)
@@ -90,9 +91,10 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
   const handleContinue = async () => {
     if (!file) return;
     if (changeCurrentState)
-      changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering"})
+      changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering", amount: currentState.amount})
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("loanAmount", currentState.amount.toString());
     fetch("http://localhost:8000/upload", {
       method: "POST",
       body: formData, // Note: Don't set Content-Type manually
