@@ -8,7 +8,8 @@ export enum states{
   LOAN_PROPOSAL_FORM,
   LOAN_DENIED_STATE,
   PDF_UPLOAD_STATE,
-  PARSE_STATEMENT_STATE
+  PARSE_STATEMENT_STATE,
+  STATEMENT_RESULT_STATE
 }
 export interface FormHookState{
   state: states,
@@ -23,7 +24,8 @@ export default function Home() {
       {(currentState.state === states.LOAN_PROPOSAL_FORM && <LoanProposalCard changeCurrentState={changeCurrentState} contents={<LoanproposalForm changeCurrentState={changeCurrentState}/>}/>) || 
       (currentState.state === states.LOAN_DENIED_STATE && <LoanProposalCard changeCurrentState={changeCurrentState} contents={currentState.message}/> ||
       (currentState.state === states.PDF_UPLOAD_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ <PdfUploadForm changeFile = {changeFile} changeCurrentState={changeCurrentState}/> }  />) ||
-      (currentState.state === states.PARSE_STATEMENT_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ <LoadingScreen /> }  />)
+      (currentState.state === states.PARSE_STATEMENT_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ <LoadingScreen /> }  />) ||
+      (currentState.state === states.STATEMENT_RESULT_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ "RESULT IS OUT BITCH" }  />)
       )}
     </div>
   );

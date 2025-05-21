@@ -88,9 +88,24 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
   }
 
   const handleContinue = async () => {
+    if (!file) return;
     if (changeCurrentState)
       changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering"})
-    
+    const formData = new FormData();
+    formData.append("file", file);
+    fetch("http://localhost:8000/upload", {
+      method: "POST",
+      body: formData, // Note: Don't set Content-Type manually
+    })
+    .then((res)=> res.json())
+    .then((data) => {
+      console.log(data);
+      if (changeCurrentState)
+        changeCurrentState({state: states.STATEMENT_RESULT_STATE, message: "Passed Initial Filtering"})
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   return (
