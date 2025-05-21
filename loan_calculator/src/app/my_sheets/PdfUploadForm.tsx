@@ -2,14 +2,15 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, Dispatch, SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { FileText, Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+import { FormHookState } from "../page"
 
 export type PdfUploadFormProps = {
-  changeCurrentState?: (state: string) => void
+  changeCurrentState?: Dispatch<SetStateAction<FormHookState>>
   onUploadComplete?: (fileUrl: string) => void
 }
 
@@ -64,7 +65,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
 
         // Change state if needed
         if (changeCurrentState) {
-          changeCurrentState("documentUploaded")
+          // changeCurrentState()
         }
       }, 2000)
     } catch (error) {

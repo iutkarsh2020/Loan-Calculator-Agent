@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Dispatch, SetStateAction, useState } from "react"
 import { states } from "../page"
+import { PdfUploadForm } from "./PdfUploadForm"
 
 interface LoanProposalCardProps {
     contents: React.ReactNode,
@@ -62,6 +63,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export function LoanProposalCard( prop : LoanProposalCardProps){
+    console.log("sus")
+    console.log(prop)
     return (
         <Card className="w-[70%]">
           <CardHeader>
@@ -69,7 +72,13 @@ export function LoanProposalCard( prop : LoanProposalCardProps){
             <CardDescription>Please fill out this form correctly.</CardDescription>
           </CardHeader>
           <CardContent>
-            {(prop.contents?.type === LoanproposalForm && <LoanproposalForm changeCurrentState={prop.changeCurrentState}/>) || prop.contents}
+          {(prop.contents?.type === "LoanproposalForm" && (
+          <LoanproposalForm changeCurrentState={prop.changeCurrentState} />
+        )) ||
+          (prop.contents?.type === PdfUploadForm && (
+            <PdfUploadForm changeCurrentState={prop.changeCurrentState} />
+          )) ||
+          prop.contents}
           </CardContent>
         </Card>
       )
