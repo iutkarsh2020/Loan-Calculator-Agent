@@ -17,13 +17,14 @@ export interface FormHookState{
 
 export default function Home() {
   const [currentState, changeCurrentState] = useState({state: states.PDF_UPLOAD_STATE, message: ""} as FormHookState);
+  const [file, changeFile] = useState<File | null>(null);
   return (
     <div className="h-[70%] w-screen flex justify-center items-center bg-slate-100">
       {(currentState.state === states.LOAN_PROPOSAL_FORM && <LoanProposalCard changeCurrentState={changeCurrentState} contents={<LoanproposalForm changeCurrentState={changeCurrentState}/>}/>) || 
       (currentState.state === states.LOAN_DENIED_STATE && <LoanProposalCard changeCurrentState={changeCurrentState} contents={currentState.message}/> ||
-      (currentState.state === states.PDF_UPLOAD_STATE && <LoanProposalCard changeCurrentState={changeCurrentState} contents={ <PdfUploadForm changeCurrentState={changeCurrentState}/> }  />)
+      (currentState.state === states.PDF_UPLOAD_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ <PdfUploadForm changeFile = {changeFile} changeCurrentState={changeCurrentState}/> }  />) ||
+      (currentState.state === states.PARSE_STATEMENT_STATE && <LoanProposalCard changeFile = {changeFile} changeCurrentState={changeCurrentState} contents={ <LoadingScreen /> }  />)
       )}
-      <LoadingScreen/>
     </div>
   );
 }

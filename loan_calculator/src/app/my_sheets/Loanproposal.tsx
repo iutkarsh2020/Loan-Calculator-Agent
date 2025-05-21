@@ -41,6 +41,7 @@ interface LoanProposalCardProps {
         state: states;
         message: string;
     }>>
+    changeFile: Dispatch<SetStateAction<File | null>>
 }
 interface LoanProposalFormProps {
     changeCurrentState: Dispatch<SetStateAction<{
@@ -66,17 +67,17 @@ export function LoanProposalCard( prop : LoanProposalCardProps){
     console.log("sus")
     console.log(prop)
     return (
-        <Card className="w-[70%]">
+        <Card className="w-[70%] h-[80vh] flex flex-col">
           <CardHeader>
-            <CardTitle>Loan Proposal Form</CardTitle>
-            <CardDescription>Please fill out this form correctly.</CardDescription>
+            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement"}</CardTitle>
+            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you."}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="h-min-[80vh] items-center justify-center">
           {(prop.contents?.type === "LoanproposalForm" && (
           <LoanproposalForm changeCurrentState={prop.changeCurrentState} />
         )) ||
           (prop.contents?.type === PdfUploadForm && (
-            <PdfUploadForm changeCurrentState={prop.changeCurrentState} />
+            <PdfUploadForm changeFile = {prop.changeFile} changeCurrentState={prop.changeCurrentState} />
           )) ||
           prop.contents}
           </CardContent>

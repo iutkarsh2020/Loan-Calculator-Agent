@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { FileText, Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
-import { FormHookState } from "../page"
+import { FormHookState, states } from "../page"
 
 export type PdfUploadFormProps = {
   changeCurrentState?: Dispatch<SetStateAction<FormHookState>>
   onUploadComplete?: (fileUrl: string) => void
+  changeFile: Dispatch<SetStateAction<File | null>>
 }
 
-export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploadFormProps) => {
+export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile }: PdfUploadFormProps) => {
   const [file, setFile] = useState<File | null>(null)
   const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
   const [progress, setProgress] = useState(0)
@@ -30,10 +31,9 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
 
   const handleUpload = async () => {
     if (!file) return
-
     try {
       setStatus("uploading")
-
+      changeFile(file)
       // Simulate upload progress
       const interval = setInterval(() => {
         setProgress((prev) => {
@@ -55,18 +55,18 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
         setProgress(100)
         setStatus("success")
 
-        // Mock file URL - replace with actual S3 URL in production
-        const mockFileUrl = `https://your-s3-bucket.s3.amazonaws.com/${file.name}`
+      //   // Mock file URL - replace with actual S3 URL in production
+      //   const mockFileUrl = `https://your-s3-bucket.s3.amazonaws.com/${file.name}`
 
-        // Call the callback if provided
-        if (onUploadComplete) {
-          onUploadComplete(mockFileUrl)
-        }
+      //   // Call the callback if provided
+      //   if (onUploadComplete) {
+      //     onUploadComplete(mockFileUrl)
+      //   }
 
-        // Change state if needed
-        if (changeCurrentState) {
-          // changeCurrentState()
-        }
+      //   // Change state if needed
+      //   if (changeCurrentState) {
+      //     // changeCurrentState()
+      //   }
       }, 2000)
     } catch (error) {
       console.error("Upload failed:", error)
@@ -85,6 +85,12 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
+  }
+
+  const handleContinue = async () => {
+    if (changeCurrentState)
+      changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering"})
+    
   }
 
   return (
@@ -120,7 +126,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
               </div>
               <Button variant="default" size="sm" onClick={handleUpload} className="flex items-center gap-1">
                 <Upload className="h-4 w-4" />
-                Upload
+                Submit
               </Button>
             </div>
           </div>
@@ -152,9 +158,9 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
               </div>
               <CheckCircle className="h-5 w-5 text-green-600" />
             </div>
-            <Button variant="outline" size="sm" onClick={resetUpload} className="w-full">
+            {/* <Button variant="outline" size="sm" onClick={resetUpload} className="w-full">
               Upload another PDF
-            </Button>
+            </Button> */}
           </div>
         )}
 
@@ -187,7 +193,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete }: PdfUploa
           </Button>
         )}
         {status === "success" && (
-          <Button onClick={() => changeCurrentState && changeCurrentState("next")}>Continue</Button>
+          <Button onClick={handleContinue}>Continue</Button>
         )}
       </div>
     </div>
