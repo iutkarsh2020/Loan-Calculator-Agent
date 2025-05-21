@@ -99,23 +99,26 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
         // Initial screening rules
         if (monthlyRevenue < 50000) {
             let message = "Rejected: Monthly revenue below ₹50,000.\nWe're sorry, but your monthly revenue does not meet our minimum eligibility."
-            
+            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            return
         }
 
         const unsupportedIndustries = ["Crypto", "Adult Content", "Gambling"];
         if (unsupportedIndustries.includes(values.BusinessType)) {
-            console.warn("Rejected: Unsupported industry type.");
-            return alert("Unfortunately, we cannot support this industry type for lending.");
+            let message = "Rejected: Unsupported industry type.\nUnfortunately, we cannot support this industry type for lending."
+            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            return
         }
 
         if (existingLoanAmount > 1000000) {
-            console.warn("Rejected: Too much existing debt.");
-            return alert("We are unable to proceed due to high existing loan obligations.");
+            let message = "Rejected: Too much existing debt.\nWe are unable to proceed due to high existing loan obligations."
+            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            return
         }
 
         // If all checks pass, continue to PDF upload
-        console.log("✅ Passed initial screening", values);
-        alert("You're eligible for the next step! Please upload your bank statement.");
+    
+        changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering"});
     }
 
       return (
