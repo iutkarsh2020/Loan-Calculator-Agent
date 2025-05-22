@@ -21,7 +21,7 @@ export interface FormHookState{
 
 
 export default function Home() {
-  const [currentState, changeCurrentState] = useState({state: states.PDF_UPLOAD_STATE, message: "", amount: 2000} as FormHookState);
+  const [currentState, changeCurrentState] = useState({state: states.PARSE_STATEMENT_STATE, message: "", amount: 2000} as FormHookState);
   const [file, changeFile] = useState<File | null>(null);
   console.log(currentState)
   return (

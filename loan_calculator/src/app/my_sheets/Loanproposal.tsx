@@ -35,6 +35,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 import { FormHookState, states } from "../page"
 import { PdfUploadForm } from "./PdfUploadForm"
 import { Analysis } from "./Analysis"
+import LoadingScreen from "./LoadingScreen"
 
 interface LoanProposalCardProps {
     contents: React.ReactNode,
@@ -64,8 +65,8 @@ export function LoanProposalCard( prop : LoanProposalCardProps){
     return (
         <Card className="w-[70%] min-h-[75vh] flex flex-col">
           <CardHeader >
-            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement" || prop.contents?.type === Analysis && "Document Analysis Complete"}</CardTitle>
-            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you." || prop.contents?.type === Analysis && "Based on the uploaded statement, here's the result"}</CardDescription>
+            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement" || prop.contents?.type === Analysis && "Document Analysis Complete" || prop.contents?.type === LoadingScreen && "Analysing your statement"}</CardTitle>
+            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you." || prop.contents?.type === Analysis && "Based on the uploaded statement, here's the result" || prop.contents?.type === LoadingScreen && "Please wait while we find you the best offer"}</CardDescription>
           </CardHeader>
           <CardContent className="h-min-[80vh] items-center justify-center">
           {(prop.contents?.type === "LoanproposalForm" && (
