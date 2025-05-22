@@ -137,7 +137,8 @@ class Agent:
         return {'filtered_json': to_return_json}
     
     def approve_or_reject(self, state):
-        decision = my_agent.llm.generate_content([self.system_message, state['filtered_json'], "Loan amount is : "+ self.amount])
+        decision = self.llm.generate_content([self.system_message, state['filtered_json'], "Loan amount is : "+ self.amount])
+        decision = decision.candidates[0].content.parts[0].text
         return {'final_decision': decision}
         
     def generate_report(self, state):
@@ -150,8 +151,32 @@ class Agent:
 
         return match.group(1).lower() == 'true'
 
+def extract_field(s: str, key: str, default):
+    # Matches: "Key": true / false / "some string"
+    match = re.search(rf'"{key}"\s*:\s*(true|false|"[^"]*")', s)
+    if not match:
+        return default
+    value = match.group(1)
+    # Convert string booleans or strip quotes
+    if value == "true":
+        return True
+    elif value == "false":
+        return False
+    elif value.startswith('"'):
+        return value.strip('"')
+    return default
+
 def loan_validationAgent(loan_amount, images) -> dict: 
-    my_agent = Agent(system_message, 200, None, images)
+    my_agent = Agent(system_message, loan_amount, None, images)
     final_state = my_agent.graph.invoke(initial_state)
-    print(final_state)
-    return final_state
+    s1 = final_state['final_decision']
+    s2= final_state['filtered_json']
+    output = {
+        "Data_Quality": extract_field(s2, "Data_Quality", False),
+        "Data_Quality_Reason": extract_field(s2, "Data_Quality_Reason", ""),
+        "Loan_Approved": extract_field(s1, "Loan_Approved", False),
+        "Reason": extract_field(s1, "Reason", "")
+    }
+    return output 
+
+
