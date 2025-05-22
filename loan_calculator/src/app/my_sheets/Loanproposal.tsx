@@ -63,7 +63,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export function LoanProposalCard( prop : LoanProposalCardProps){
     return (
-        <Card className="w-[70%] min-h-[75vh] flex flex-col">
+        <Card className="w-[80%] min-h-[75vh] flex flex-col">
           <CardHeader >
             <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement" || prop.contents?.type === Analysis && "Document Analysis Complete" || prop.contents?.type === LoadingScreen && "Analysing your statement"}</CardTitle>
             <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you." || prop.contents?.type === Analysis && "Based on the uploaded statement, here's the result" || prop.contents?.type === LoadingScreen && "Please wait while we find you the best offer"}</CardDescription>

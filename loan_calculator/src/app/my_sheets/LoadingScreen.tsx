@@ -4,7 +4,7 @@ import loadingAnimation from "@/Animation/DocumentProcessing.json"
 import { useEffect, useState } from "react"
 
 export default function LoadingScreen() {
-  const messages = ["Processing your data...", "Analyzing your statement...", "Calculating loan options..."]
+  const messages = ["Our AI Agents are working hard...", "Parsing your statement, analysing your finances...", "Please wait while we find the best offer for you..."]
 
   // State to track the current message index
   const [messageIndex, setMessageIndex] = useState(0)
@@ -14,7 +14,7 @@ export default function LoadingScreen() {
     const interval = setInterval(() => {
       // Update the index, wrapping around to 0 when we reach the end
       setMessageIndex((current) => (current + 1) % messages.length)
-    }, 2000)
+    }, 2500)
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval)
