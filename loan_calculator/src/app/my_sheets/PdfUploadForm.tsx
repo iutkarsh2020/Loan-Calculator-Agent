@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { FileText, Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react"
 import { FormHookState, states } from "../page"
+import { callResult } from "./Analysis"
 
 export type PdfUploadFormProps = {
   currentState: FormHookState,
@@ -21,7 +22,6 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
   const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
   const [progress, setProgress] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile && selectedFile.type === "application/pdf") {
@@ -91,7 +91,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
   const handleContinue = async () => {
     if (!file) return;
     if (changeCurrentState)
-      changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering", amount: currentState.amount})
+      changeCurrentState((prev) => ({...prev, state: states.PARSE_STATEMENT_STATE}))
     const formData = new FormData();
     formData.append("file", file);
     formData.append("loanAmount", currentState.amount.toString());
@@ -101,9 +101,12 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
     })
     .then((res)=> res.json())
     .then((data) => {
-      console.log(data);
       if (changeCurrentState)
-        changeCurrentState({state: states.STATEMENT_RESULT_STATE, message: "Passed Initial Filtering"})
+        changeCurrentState((prev) => ({...prev, state: states.STATEMENT_RESULT_STATE,  Result: {
+          DataQuality: data.Data_Quality,
+          DataQualityReason: data.Data_Quality_Reason,
+          LoanApproved: data.Loan_Approved,
+          Reason: data.Reason} as callResult}))
     })
     .catch((error) => {
       console.error(error);

@@ -34,21 +34,16 @@ import { Input } from "@/components/ui/input"
 import { Dispatch, SetStateAction, useState } from "react"
 import { FormHookState, states } from "../page"
 import { PdfUploadForm } from "./PdfUploadForm"
+import { Analysis } from "./Analysis"
 
 interface LoanProposalCardProps {
     contents: React.ReactNode,
     currentState: FormHookState,
-    changeCurrentState: Dispatch<SetStateAction<{
-        state: states;
-        message: string;
-    }>>
+    changeCurrentState: Dispatch<SetStateAction<FormHookState>>
     changeFile: Dispatch<SetStateAction<File | null>>
 }
 interface LoanProposalFormProps {
-    changeCurrentState: Dispatch<SetStateAction<{
-        state: states;
-        message: string;
-    }>>
+    changeCurrentState: Dispatch<SetStateAction<FormHookState>>
 }
 const formSchema = z.object({
     BusinessName: z.string(),
@@ -67,10 +62,10 @@ type FormData = z.infer<typeof formSchema>;
 
 export function LoanProposalCard( prop : LoanProposalCardProps){
     return (
-        <Card className="w-[70%] h-min-[80vh] flex flex-col">
-          <CardHeader>
-            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement"}</CardTitle>
-            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you."}</CardDescription>
+        <Card className="w-[70%] min-h-[75vh] flex flex-col">
+          <CardHeader >
+            <CardTitle>{prop.contents?.type === LoanproposalForm && "Loan Proposal Form" || prop.contents?.type === PdfUploadForm && "Upload Bank Statement" || prop.contents?.type === Analysis && "Document Analysis Complete"}</CardTitle>
+            <CardDescription>{prop.contents?.type === LoanproposalForm && "Please fill out this form correctly." || prop.contents?.type === PdfUploadForm && "We need your bank statement to provide the best customized loan offer for you." || prop.contents?.type === Analysis && "Based on the uploaded statement, here's the result"}</CardDescription>
           </CardHeader>
           <CardContent className="h-min-[80vh] items-center justify-center">
           {(prop.contents?.type === "LoanproposalForm" && (
@@ -78,6 +73,9 @@ export function LoanProposalCard( prop : LoanProposalCardProps){
         )) ||
           (prop.contents?.type === PdfUploadForm && (
             <PdfUploadForm currentState={prop.currentState} changeFile = {prop.changeFile} changeCurrentState={prop.changeCurrentState} />
+          )) ||
+          (prop.contents?.type === Analysis && (
+            <Analysis currentState={prop.currentState} changeCurrentState={prop.changeCurrentState} />
           )) ||
           prop.contents}
           </CardContent>
@@ -111,26 +109,26 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
         // Initial screening rules
         if (monthlyRevenue < 50000) {
             let message = "Rejected: Monthly revenue below ₹50,000.\nWe're sorry, but your monthly revenue does not meet our minimum eligibility."
-            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            changeCurrentState((prev) => ({...prev,state: states.LOAN_DENIED_STATE, message: message }));
             return
         }
 
         const unsupportedIndustries = ["Crypto", "Adult Content", "Gambling"];
         if (unsupportedIndustries.includes(values.BusinessType)) {
             let message = "Rejected: Unsupported industry type.\nUnfortunately, we cannot support this industry type for lending."
-            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            changeCurrentState((prev) => ({...prev,state: states.LOAN_DENIED_STATE, message: message }));
             return
         }
 
         if (existingLoanAmount > 1000000) {
             let message = "Rejected: Too much existing debt.\nWe are unable to proceed due to high existing loan obligations."
-            changeCurrentState({state: states.LOAN_DENIED_STATE, message: message});
+            changeCurrentState((prev) => ({...prev,state: states.LOAN_DENIED_STATE, message: message }));
             return
         }
 
         // If all checks pass, continue to PDF upload
     
-        changeCurrentState({state: states.PDF_UPLOAD_STATE, message: "Passed Initial Filtering"});
+        changeCurrentState((prev) => ({...prev,state: states.PDF_UPLOAD_STATE, message: "Passed Initial Filtering" }));
     }
 
       return (
