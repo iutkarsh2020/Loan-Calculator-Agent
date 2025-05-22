@@ -97,7 +97,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
     formData.append("loanAmount", currentState.amount.toString());
     fetch("http://localhost:8000/upload", {
       method: "POST",
-      body: formData, // Note: Don't set Content-Type manually
+      body: formData,
     })
     .then((res)=> res.json())
     .then((data) => {
@@ -205,7 +205,7 @@ export const PdfUploadForm = ({ changeCurrentState, onUploadComplete, changeFile
 
       <div className="flex justify-end space-x-2">
         {status !== "uploading" && (
-          <Button variant="outline" onClick={() => changeCurrentState && changeCurrentState("previous")}>
+          <Button variant="outline" onClick={() => changeCurrentState && changeCurrentState((prev) => ({...prev, state: states.LOAN_PROPOSAL_FORM}))}>
             Back
           </Button>
         )}

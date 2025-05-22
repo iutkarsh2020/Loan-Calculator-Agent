@@ -66,8 +66,6 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export function LoanProposalCard( prop : LoanProposalCardProps){
-    console.log("sus")
-    console.log(prop)
     return (
         <Card className="w-[70%] h-min-[80vh] flex flex-col">
           <CardHeader>
@@ -132,7 +130,7 @@ export function LoanproposalForm({ changeCurrentState }: LoanProposalFormProps) 
 
         // If all checks pass, continue to PDF upload
     
-        changeCurrentState({state: states.PARSE_STATEMENT_STATE, message: "Passed Initial Filtering"});
+        changeCurrentState({state: states.PDF_UPLOAD_STATE, message: "Passed Initial Filtering"});
     }
 
       return (

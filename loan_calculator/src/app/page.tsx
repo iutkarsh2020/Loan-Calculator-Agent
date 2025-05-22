@@ -19,7 +19,7 @@ export interface FormHookState{
 
 
 export default function Home() {
-  const [currentState, changeCurrentState] = useState({state: states.LOAN_PROPOSAL_FORM, message: "", amount: 0} as FormHookState);
+  const [currentState, changeCurrentState] = useState({state: states.PDF_UPLOAD_STATE, message: "", amount: 2000} as FormHookState);
   const [file, changeFile] = useState<File | null>(null);
   return (
     <div className="h-[70%] w-screen flex justify-center items-center bg-slate-100">
